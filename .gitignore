@@ -1,0 +1,14 @@
+tmp/
+.DS_Store
+.idea/
+bin/
+.vscode/
+.env*
+!.env.example
+logs/
+cover
+coverage
+cover_root
+coverage_root
+coverage.out
+*.coverprofile
