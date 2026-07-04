@@ -1,0 +1,17 @@
+# Conservative permissions for config repos and small utilities.
+[permission]
+allow = [
+  "Read",
+  "Grep",
+  "Bash(git status)",
+  "Bash(git diff *)",
+  "Bash(git log *)",
+  "Bash(git show *)",
+  "Bash(git branch)",
+  "Bash(git remote -v)",
+  "MCPTool(fff__*)",
+]
+ask = [
+  "Edit",
+  "Bash(*)",
+]
