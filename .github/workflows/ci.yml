@@ -2,38 +2,50 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    if: ${{ hashFiles('**/*.go') != '' }}
-
+  ci:
+    name: Test & Staticcheck
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v6
 
-      - uses: actions/setup-go@v5
+      - name: Setup Go
+        uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
           cache: true
 
-      - run: go test ./...
+      - name: Download modules
+        run: go mod download
 
-  lint:
-    runs-on: ubuntu-latest
-    if: ${{ hashFiles('**/*.go') != '' }}
+      - name: Verify module tidiness
+        run: |
+          go mod tidy
+          git diff --exit-code -- go.mod go.sum
 
-    steps:
-      - uses: actions/checkout@v4
+      - name: Test
+        run: go test -race ./...
 
-      - uses: actions/setup-go@v5
+      - name: Build
+        run: go build -v ./...
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Run staticcheck
+        uses: dominikh/staticcheck-action@v1
         with:
-          go-version-file: go.mod
-          cache: true
-
-      - uses: golangci/golangci-lint-action@v6
-        with:
-          version: latest
-          args: --timeout=5m
+          version: "latest"

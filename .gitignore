@@ -1,14 +1,12 @@
-tmp/
+# Editor and OS files
 .DS_Store
 .idea/
-bin/
 .vscode/
-.env*
-!.env.example
-logs/
-cover
-coverage
-cover_root
-coverage_root
-coverage.out
-*.coverprofile
+*.swp
+
+# Go build/test artifacts
+/bin/
+/dist/
+*.test
+*.out
+coverage.*
